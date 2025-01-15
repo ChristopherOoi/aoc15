@@ -1,23 +1,30 @@
 var fs = require('fs').promises;
 
-async function main() {
-	const data = await fs.readFile('input.txt', 'utf8');
-	const lines = data.split('\n');
-	const nums = [];
-	for (let i = 0; i < lines.length - 1; i++) {
-		let line = lines[i];
-		var arr = new Float32Array(line.split('x').map((num) => parseInt(num)));
-		nums.push(arr);
+async function getInput() {
+	try {
+		const data = await fs.readFile('input.txt', 'utf8');
+		return data;
 	}
-	var total = 0;
-	var ribbon = 0;
-	for (let num of nums) {
-		num.sort();
-		total += num[0] * num[1] + 2 * num[0] * num[1] + 2 * num[0] * num[2] + 2 * num[1] * num[2];
-		ribbon += 2 * num[0] + 2 * num[1] + num[0] * num[1] * num[2];
+	catch (err) {
+		console.error(err);
+		return null;
 	}
-	console.log(total);
-	console.log(ribbon);
 }
 
-main();
+function parseInput(data) {
+	var i = 0;
+	var j = 0;
+	for (let c of data) {
+		i += c === '(' ? 1 : -1;
+		j++;
+		if (i === -1) console.log(j);
+	}
+	console.log(i);
+}
+
+async function run() {
+	const lines = await getInput();
+	parseInput(lines.trim());
+}
+
+run();

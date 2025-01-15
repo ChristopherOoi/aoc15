@@ -1,26 +1,23 @@
-import fs from 'fs/promises';
+var fs = require('fs').promises;
 
-var data = await fs.readFile('input.txt', 'utf8');
-
-let x = 0;
-let y = 0;
-let rx = 0;
-let ry = 0;
-let seen = new Map();
-for (let i = 0; i < data.length; i++) {
-	let c = data[i];
-	let key = '';
-	if (i % 2 === 0) {
-		x += c === '>' ? 1 : c === '<' ? -1 : 0;
-		y += c === '^' ? 1 : c === 'v' ? -1 : 0;
-		key = x + ',' + y;
+async function main() {
+	const data = await fs.readFile('input.txt', 'utf8');
+	const lines = data.split('\n');
+	const nums = [];
+	for (let i = 0; i < lines.length - 1; i++) {
+		let line = lines[i];
+		var arr = new Float32Array(line.split('x').map((num) => parseInt(num)));
+		nums.push(arr);
 	}
-	else {
-		rx += c === '>' ? 1 : c === '<' ? -1 : 0;
-		ry += c === '^' ? 1 : c === 'v' ? -1 : 0;
-		key = rx + ',' + ry;
+	var total = 0;
+	var ribbon = 0;
+	for (let num of nums) {
+		num.sort();
+		total += num[0] * num[1] + 2 * num[0] * num[1] + 2 * num[0] * num[2] + 2 * num[1] * num[2];
+		ribbon += 2 * num[0] + 2 * num[1] + num[0] * num[1] * num[2];
 	}
-	seen.set(key, (seen.get(key) || 0) + 1);
+	console.log(total);
+	console.log(ribbon);
 }
 
-console.log(seen.size);
+main();
